@@ -1,0 +1,22 @@
+{
+  "MODEL": ["GEMINI", "OPENAI", "CLAUDE"],
+  "DEFAULT": "GEMINI",
+  "GEMINI": {
+      "NAME": "Gemini",
+      "URL": "https://gemini.com/",
+      "GEMINI_API_KEY": "AIzaSyARy3fYtDPg45Kl4IwlXShmhlsLtoTqB7c",
+      "top_k": 5
+  },
+  "OPENAI": {
+      "NAME": "OpenAI",
+      "URL": "https://api.openai.com/",
+      "OPENAI_API_KEY": "",
+      "model": "gpt-4"
+  },
+  "CLAUDE": {
+      "NAME": "Claude",
+      "URL": "https://claude.com/",
+      "CLAUDE_API_KEY": "",
+      "model": "claude-1.0"
+  }
+}
