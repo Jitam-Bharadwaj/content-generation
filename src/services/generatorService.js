@@ -5,6 +5,7 @@ class GeneratorService {
         try {
             const model = getModel();
             const prompt = `Generate 10 relevant SEO keywords for the topic: ${topic}. 
+                            Also give me the score of how much the keyword is relevant to the topic.
                            Return only a JSON array of strings, without any markdown formatting or additional text.`;
             
             let result;
