@@ -1,7 +1,9 @@
 const readline = require('readline');
 const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
+const ChatService = require('./services/chatService');
 
+// Remove punycode deprecation warning
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
   if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
@@ -22,18 +24,20 @@ const COMMANDS = {
   EXIT: 'exit',
   HELP: '/help',
   HEALTH: '/health',
-  MODEL: '/model'
+  MODEL: '/model',
+  HISTORY: '/history'
 };
 
-const AVAILABLE_MODELS = ['GEMINI', 'OPENAI', 'CALUDE'];
+const AVAILABLE_MODELS = ['GEMINI', 'OPENAI', 'CLAUDE'];
 
 async function showHelp() {
   console.log('\nAvailable commands:');
-  console.log('/model  - Switch between AI models');
-  console.log('/switch - Switch between modes');
-  console.log('/health - Show current system health');
-  console.log('exit   - Exit current mode or program');
-  console.log('/help  - Show this help message\n');
+  console.log('/model   - Switch between AI models');
+  console.log('/switch  - Switch between modes');
+  console.log('/health  - Show current system health');
+  console.log('/history - Show chat history');
+  console.log('exit    - Exit current mode or program');
+  console.log('/help   - Show this help message\n');
 }
 
 async function displayHealthCheck() {
@@ -41,10 +45,27 @@ async function displayHealthCheck() {
     const response = await axios.get(`${API_URL}/api/health`);
     console.log('\nSystem Health Status:');
     console.log('===================');
-    console.log(JSON.stringify(response.data.data, null, 2));
+    console.log(JSON.stringify(response.data, null, 2));
     console.log('===================\n');
   } catch (error) {
     console.error('Error fetching health status:', error.message);
+  }
+}
+
+async function displayChatHistory() {
+  try {
+    const response = await axios.get(`${API_URL}/api/chat/history`);
+    console.log('\nChat History:');
+    console.log('===================');
+    response.data.res.data.forEach((chat, index) => {
+      console.log(`\nConversation ${index + 1}:`);
+      console.log(`User: ${chat.userInput}`);
+      console.log(`AI: ${chat.aiResponse}`);
+      console.log(`Time: ${new Date(chat.timestamp).toLocaleString()}`);
+      console.log('-------------------');
+    });
+  } catch (error) {
+    console.error('Error fetching chat history:', error.message);
   }
 }
 
@@ -72,6 +93,61 @@ async function switchModel() {
       }
     });
   });
+}
+
+async function handleChatMode() {
+  console.clear();
+  console.log('\n=== Chat Mode ===');
+  console.log('Type your message or use commands (/help for list)\n');
+
+  const chat = async () => {
+    try {
+      rl.question('You: ', async (input) => {
+        if (input.toLowerCase() === COMMANDS.EXIT) {
+          console.clear();
+          showMainMenu();
+          return;
+        }
+
+        if (input.toLowerCase() === COMMANDS.HELP) {
+          await showHelp();
+          chat();
+          return;
+        }
+
+        if (input.toLowerCase() === COMMANDS.HEALTH) {
+          await displayHealthCheck();
+          chat();
+          return;
+        }
+
+        if (input.toLowerCase() === COMMANDS.MODEL) {
+          await switchModel();
+          chat();
+          return;
+        }
+
+        if (input.toLowerCase() === COMMANDS.HISTORY) {
+          await displayChatHistory();
+          chat();
+          return;
+        }
+
+        try {
+          const response = await axios.post(`${API_URL}/api/chat`, { message: input });
+          console.log('\nAI:', response.data.res.data, '\n');
+        } catch (error) {
+          console.error('Error in chat:', error.response?.data?.error || error.message);
+        }
+        chat();
+      });
+    } catch (error) {
+      console.error('Error in chat mode:', error.message);
+      chat();
+    }
+  };
+
+  chat();
 }
 
 async function handleGeneratorMode() {

@@ -1,27 +1,30 @@
 const mongoose = require('mongoose');
 
+const blogContentSchema = new mongoose.Schema({
+    markdown: String,
+    json: Object,
+    html: String
+});
+
 const chatSchema = new mongoose.Schema({
-    requestType: {
-        type: String,
-        enum: ['content', 'title', 'meta', 'keywords', 'all'],
-        required: true
-    },
-    input: {
+    userInput: {
         type: String,
         required: true
     },
-    output: {
-        type: mongoose.Schema.Types.Mixed,
+    aiResponse: {
+        type: String,
         required: true
     },
-    metadata: {
-        processTime: Number,
-        tokensUsed: Number,
-        timestamp: {
-            type: Date,
-            default: Date.now
-        }
+    blogContent: blogContentSchema,
+    contentType: {
+        type: String,
+        enum: ['chat'],
+        default: 'chat'
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now
     }
 });
 
-module.exports = mongoose.model('ChatsFinal', chatSchema);
+module.exports = mongoose.model('Chat', chatSchema);

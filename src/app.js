@@ -13,36 +13,52 @@ connectDB();
 // Middleware
 app.use(express.json());
 
-// to start the health monitoring
+// Start health monitoring
 healthMonitor.startMonitoring();
 
-app.use('/api/health', require('./routes/healthRoutes'));
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+  if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
+    return;
+  }
+  console.warn(warning.name, warning.message);
+});
 
-// Swagger configuration - only for generator routes
+
+// Swagger configuration
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
         info: {
             title: 'Content Generation API',
             version: '1.0.0',
-            description: 'API for generating various types of content'
+            description: 'API for generating SEO content, titles, meta descriptions, and more'
         },
         servers: [
             {
-                url: `http://localhost:${process.env.PORT || 3000}`
+                url: '/'
             }
         ]
     },
-    apis: ['./routes/generatorRoutes.js']
-    
+    apis: ['./src/routes/*.js'] // Path to the API routes
 };
 
+
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: "Content Generation API Documentation"
+}));
+
+// Routes
 app.use('/api/generate', require('./routes/generatorRoutes'));
+app.use('/api/health', require('./routes/healthRoutes'));
 
-// Error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
@@ -53,9 +69,6 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    // Logging initial health status
-    healthMonitor.logHealthStatus();
-
     console.log(`Server running on port ${port}`);
     console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
 });
