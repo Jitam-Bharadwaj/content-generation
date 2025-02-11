@@ -1,7 +1,7 @@
 const readline = require('readline');
 const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
-const ChatService = require('./services/chatService');
+const ChatService = require('./services/chatServices');
 
 // Remove punycode deprecation warning
 process.removeAllListeners('warning');
