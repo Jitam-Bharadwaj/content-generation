@@ -13,7 +13,7 @@ connectDB();
 // Middleware
 app.use(express.json());
 
-// Start health monitoring
+// used to start health status monitoring
 healthMonitor.startMonitoring();
 
 process.removeAllListeners('warning');
@@ -25,7 +25,7 @@ process.on('warning', (warning) => {
 });
 
 
-// Swagger configuration
+// used for swagger configuration
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -40,13 +40,13 @@ const swaggerOptions = {
             }
         ]
     },
-    apis: ['./src/routes/*.js'] // Path to the API routes
+    apis: ['./src/routes/*.js']
 };
 
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-// Serve Swagger UI
+// used to serve Swagger UI
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerSpec, {
     explorer: true,
