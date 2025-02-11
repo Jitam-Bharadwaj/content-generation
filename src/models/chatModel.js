@@ -1,11 +1,5 @@
 const mongoose = require('mongoose');
 
-const blogContentSchema = new mongoose.Schema({
-    markdown: String,
-    json: Object,
-    html: String
-});
-
 const chatSchema = new mongoose.Schema({
     userInput: {
         type: String,
@@ -15,7 +9,6 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    blogContent: blogContentSchema,
     contentType: {
         type: String,
         enum: ['chat'],
