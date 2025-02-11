@@ -103,7 +103,6 @@ class GeneratorService {
         }
     }
 
-    // In src/services/generatorService.js
     static async generateAllContent(topic) {
         try {
             const [keywords, titles, meta, content] = await Promise.all([

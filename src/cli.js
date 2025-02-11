@@ -3,7 +3,7 @@ const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
 const ChatService = require('./services/chatServices');
 
-// Remove punycode deprecation warning
+// used to remove punycode deprecation warning
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
   if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
@@ -353,7 +353,7 @@ async function startChat() {
   showMainMenu();
 }
 
-// Handle process termination gracefully
+// Handled process termination
 process.on('SIGINT', () => {
   console.log('\nGoodbye!');
   rl.close();
