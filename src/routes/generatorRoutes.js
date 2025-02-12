@@ -85,11 +85,20 @@ router.post('/keywords', async (req, res) => {
     try {
         const startTime = Date.now();
         const keywords = await GeneratorService.generateKeywords(req.body.topic);
-        
+        const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
+
+        // Parse the keywords into an array of objects
+        const parsedKeywords = JSON.parse(keywords).map(k => ({
+            keyword: k.keyword,
+            relevance: k.relevance
+        }));
+
         const chat = new Chat({
             requestType: 'keywords',
             input: req.body.topic,
-            output: keywords,
+            slug: slug,
+            output: JSON.stringify(parsedKeywords),
+            keywords: parsedKeywords,
             metadata: {
                 processTime: Date.now() - startTime
             }
@@ -98,7 +107,7 @@ router.post('/keywords', async (req, res) => {
 
         res.json({
             success: true,
-            data: keywords
+            data: parsedKeywords
         });
     } catch (error) {
         res.status(500).json({
@@ -107,7 +116,6 @@ router.post('/keywords', async (req, res) => {
         });
     }
 });
-
 /**
  * @swagger
  * /api/generate/title:
@@ -142,11 +150,14 @@ router.post('/title', async (req, res) => {
     try {
         const startTime = Date.now();
         const titles = await GeneratorService.generateTitle(req.body.topic);
-        
+        const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
+
         const chat = new Chat({
             requestType: 'title',
             input: req.body.topic,
-            output: titles,
+            slug: slug,
+            output: JSON.stringify(titles),
+            titles: titles,
             metadata: {
                 processTime: Date.now() - startTime
             }
@@ -200,11 +211,14 @@ router.post('/meta', async (req, res) => {
     try {
         const startTime = Date.now();
         const meta = await GeneratorService.generateMeta(req.body.topic);
-        
+        const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
+
         const chat = new Chat({
             requestType: 'meta',
             input: req.body.topic,
-            output: meta,
+            slug: slug,
+            output: JSON.stringify(meta),
+            meta: meta,
             metadata: {
                 processTime: Date.now() - startTime
             }
@@ -255,11 +269,14 @@ router.post('/content', async (req, res) => {
     try {
         const startTime = Date.now();
         const content = await GeneratorService.generateContent(req.body.topic);
-        
+        const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
+
         const chat = new Chat({
             requestType: 'content',
             input: req.body.topic,
+            slug: slug,
             output: content,
+            content: content,
             metadata: {
                 processTime: Date.now() - startTime
             }
@@ -269,22 +286,6 @@ router.post('/content', async (req, res) => {
         res.json({
             success: true,
             data: content
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
-});
-
-router.post('/switch-model', async (req, res) => {
-    try {
-        const { model } = req.body;
-        const result = await GeneratorService.switchModel(model);
-        res.json({
-            success: true,
-            message: result
         });
     } catch (error) {
         res.status(500).json({
@@ -342,11 +343,18 @@ router.post('/all', async (req, res) => {
     try {
         const startTime = Date.now();
         const allContent = await GeneratorService.generateAllContent(req.body.topic);
-        
+        // Use the first generated title for the slug
+        const slug = allContent.titles[0].toLowerCase().replace(/\s+/g, '-');
+
         const chat = new Chat({
             requestType: 'all',
             input: req.body.topic,
-            output: allContent,
+            slug: slug,
+            output: JSON.stringify(allContent),
+            keywords: allContent.keywords,
+            titles: allContent.titles,
+            meta: allContent.meta,
+            content: allContent.content,
             metadata: {
                 processTime: Date.now() - startTime
             }
