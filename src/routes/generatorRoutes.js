@@ -87,7 +87,6 @@ router.post('/keywords', async (req, res) => {
         const keywords = await GeneratorService.generateKeywords(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        // Parse the keywords into an array of objects
         const parsedKeywords = JSON.parse(keywords).map(k => ({
             keyword: k.keyword,
             relevance: k.relevance
@@ -343,7 +342,7 @@ router.post('/all', async (req, res) => {
     try {
         const startTime = Date.now();
         const allContent = await GeneratorService.generateAllContent(req.body.topic);
-        // Use the first generated title for the slug
+        // first generated titke as slug
         const slug = allContent.titles[0].toLowerCase().replace(/\s+/g, '-');
 
         const chat = new Chat({

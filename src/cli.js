@@ -2,7 +2,7 @@ const readline = require('readline');
 const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
 
-// Remove punycode deprecation warning
+// punycode warning removal
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
   if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
@@ -327,7 +327,7 @@ async function startChat() {
   showMainMenu();
 }
 
-// Handle process termination
+// used to handle process termination
 process.on('SIGINT', () => {
   console.log('\nGoodbye!');
   rl.close();
