@@ -1,9 +1,8 @@
 const readline = require('readline');
 const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
-const ChatService = require('./services/chatServices');
 
-// used to remove punycode deprecation warning
+// Remove punycode deprecation warning
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
   if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
@@ -134,8 +133,9 @@ async function handleChatMode() {
         }
 
         try {
-          const response = await axios.post(`${API_URL}/api/chat`, { message: input });
-          console.log('\nAI:', response.data.res.data, '\n');
+          // Changed to use content generation endpoint for chat
+          const response = await axios.post(`${API_URL}/api/generate/content`, { topic: input });
+          console.log('\nAI:', response.data.data, '\n');
         } catch (error) {
           console.error('Error in chat:', error.response?.data?.error || error.message);
         }
@@ -162,134 +162,108 @@ async function handleGeneratorMode() {
   console.log('Type "exit" to return to main menu');
   console.log('Type "/help" for available commands\n');
 
-  const generator = async () => {
-      try {
-          rl.question('Select option (1-5): ', async (option) => {
-                if (option.toLowerCase() === COMMANDS.EXIT) {
-                    console.clear();
-                    showMainMenu();
-                    return;
-                }
+  const selectKeywords = async (keywords) => {
+    return new Promise((resolve) => {
+      console.log('\nAvailable keywords:');
+      keywords.forEach((k, index) => {
+        console.log(`${index + 1}. ${k.keyword} (Relevance: ${k.relevance})`);
+      });
 
-                if (option.toLowerCase() === COMMANDS.HELP) {
-                    await showHelp();
-                    generator();
-                    return;
-                }
-
-                if (option.toLowerCase() === COMMANDS.HEALTH) {
-                    await displayHealthCheck();
-                    generator();
-                    return;
-                }
-
-                if (option.toLowerCase() === COMMANDS.MODEL) {
-                    await switchModel();
-                    generator();
-                    return;
-                }
-
-                let endpoint;
-                let prompt;
-
-                switch (option) {
-                  case '1':
-                      endpoint = '/api/generate/keywords';
-                      prompt = 'Enter topic for keyword generation: ';
-                      break;
-                  case '2':
-                      endpoint = '/api/generate/title';
-                      prompt = 'Enter topic for title suggestions: ';
-                      break;
-                  case '3':
-                      endpoint = '/api/generate/meta';
-                      prompt = 'Enter topic for meta description: ';
-                      break;
-                  case '4':
-                      endpoint = '/api/generate/content';
-                      prompt = 'Enter topic for content generation: ';
-                      break;
-                  case '5':
-                      endpoint = '/api/generate/all';
-                      prompt = 'Enter topic to generate all content types: ';
-                      break;
-                  default:
-                      console.log('Invalid option. Please choose 1-5.\n');
-                      generator();
-                      return;
-              }
-
-              rl.question(prompt, async (topic) => {
-                  try {
-                      console.log('\nGenerating content...\n');
-                      const response = await axios.post(`${API_URL}${endpoint}`, { topic });
-                      
-                      console.log('Generated Successfully!\n');
-                      console.log(JSON.stringify(response.data.data, null, 2));
-                      console.log('\nSelect another option or type "exit" to return to main menu\n');
-                  } catch (error) {
-                      console.error('Error generating content:', error.response?.data?.error || error.message);
-                  }
-                  generator();
-              });
-          });
-      } catch (error) {
-          console.error('Error in generator mode:', error.message);
-          generator();
-      }
+      rl.question('\nEnter keyword numbers (comma-separated) to select: ', (input) => {
+        const selectedIndices = input.split(',').map(n => parseInt(n.trim()) - 1);
+        const selectedKeywords = selectedIndices
+          .filter(i => i >= 0 && i < keywords.length)
+          .map(i => keywords[i].keyword);
+        
+        if (selectedKeywords.length === 0) {
+          console.log('\nNo valid keywords selected. Please try again.');
+          return selectKeywords(keywords);
+        }
+        
+        console.log('\nSelected keywords:', selectedKeywords.join(', '), '\n');
+        resolve(selectedKeywords);
+      });
+    });
   };
 
-  generator();
-}
-
-
-async function handleChatMode() {
-  console.clear();
-  console.log('\n=== Chat Mode ===');
-  console.log('Type your message or use commands (/help for list)\n');
-
-  const chat = async () => {
+  const generator = async () => {
     try {
-      rl.question('You: ', async (input) => {
-        if (input.toLowerCase() === COMMANDS.EXIT) {
+      rl.question('Select option (1-5): ', async (option) => {
+        if (option.toLowerCase() === COMMANDS.EXIT) {
           console.clear();
           showMainMenu();
           return;
         }
 
-        if (input.toLowerCase() === COMMANDS.HELP) {
+        if (option.toLowerCase() === COMMANDS.HELP) {
           await showHelp();
-          chat();
+          generator();
           return;
         }
 
-        if (input.toLowerCase() === COMMANDS.HEALTH) {
+        if (option.toLowerCase() === COMMANDS.HEALTH) {
           await displayHealthCheck();
-          chat();
+          generator();
           return;
         }
 
-        if (input.toLowerCase() === COMMANDS.MODEL) {
+        if (option.toLowerCase() === COMMANDS.MODEL) {
           await switchModel();
-          chat();
+          generator();
           return;
         }
 
-        try {
-          const response = await axios.post(`${API_URL}/api/generate/content`, { topic: input });
-          console.log('\nAI:', response.data.data, '\n');
-        } catch (error) {
-          console.error('Error in chat:', error.response?.data?.error || error.message);
+        let endpoint;
+        let prompt;
+
+        switch (option) {
+          case '1':
+            endpoint = '/api/generate/keywords';
+            prompt = 'Enter topic for keyword generation: ';
+            break;
+          case '2':
+            endpoint = '/api/generate/title';
+            prompt = 'Enter topic for title suggestions: ';
+            break;
+          case '3':
+            endpoint = '/api/generate/meta';
+            prompt = 'Enter topic for meta description: ';
+            break;
+          case '4':
+            endpoint = '/api/generate/content';
+            prompt = 'Enter topic for content generation: ';
+            break;
+          case '5':
+            endpoint = '/api/generate/all';
+            prompt = 'Enter topic to generate all content types: ';
+            break;
+          default:
+            console.log('Invalid option. Please choose 1-5.\n');
+            generator();
+            return;
         }
-        chat();
+
+        rl.question(prompt, async (topic) => {
+          try {
+            console.log('\nGenerating content...\n');
+            const response = await axios.post(`${API_URL}${endpoint}`, { topic });
+            
+            console.log('Generated Successfully!\n');
+            console.log(JSON.stringify(response.data.data, null, 2));
+            console.log('\nSelect another option or type "exit" to return to main menu\n');
+          } catch (error) {
+            console.error('Error generating content:', error.response?.data?.error || error.message);
+          }
+          generator();
+        });
       });
     } catch (error) {
-      console.error('Error in chat mode:', error.message);
-      chat();
+      console.error('Error in generator mode:', error.message);
+      generator();
     }
   };
 
-  chat();
+  generator();
 }
 
 async function initialModelSelection() {
@@ -353,7 +327,7 @@ async function startChat() {
   showMainMenu();
 }
 
-// Handled process termination
+// Handle process termination
 process.on('SIGINT', () => {
   console.log('\nGoodbye!');
   rl.close();

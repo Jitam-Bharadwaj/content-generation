@@ -10,18 +10,42 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
+    },
     output: {
-        type: mongoose.Schema.Types.Mixed,
+        type: String,
         required: true
+    },
+    keywords: {
+        type: [{
+            keyword: String,
+            relevance: Number
+        }],
+        default: []
+    },
+    titles: {
+        type: [String],
+        default: []
+    },
+    meta: {
+        description: String
+    },
+    content: {
+        type: String,
+        default: ''
     },
     metadata: {
         processTime: Number,
-        tokensUsed: Number,
         timestamp: {
             type: Date,
             default: Date.now
         }
     }
-});
+}, { versionKey: '__v' });
 
 module.exports = mongoose.model('ChatsFinal', chatSchema);
