@@ -12,13 +12,13 @@ class GeneratorService {
             if (getModelConfig().NAME === 'Gemini') {
                 result = await model.generateContent(prompt);
                 const cleanResponse = result.response.text().replace(/```json\n|\n```/g, '').trim();
-                return JSON.parse(cleanResponse); // Parse JSON string to object
+                return JSON.parse(cleanResponse); // Parses the JSON string to object
             } else if (getModelConfig().NAME === 'OpenAI') {
                 result = await model.chat.completions.create({
                     model: getModelConfig().model,
                     messages: [{ role: 'user', content: prompt }],
                 });
-                return JSON.parse(result.choices[0].message.content); // Parse JSON string to object
+                return JSON.parse(result.choices[0].message.content); // Parses the JSON string to object
             } else {
                 throw new Error('Model not supported for keyword generation.');
             }
@@ -38,13 +38,13 @@ class GeneratorService {
             if (getModelConfig().NAME === 'Gemini') {
                 result = await model.generateContent(prompt);
                 const cleanResponse = result.response.text().replace(/```json\n|\n```/g, '').trim();
-                return JSON.parse(cleanResponse); // Parse JSON string to object
+                return JSON.parse(cleanResponse); // Parses the JSON string to object
             } else if (getModelConfig().NAME === 'OpenAI') {
                 result = await model.chat.completions.create({
                     model: getModelConfig().model,
                     messages: [{ role: 'user', content: prompt }],
                 });
-                return JSON.parse(result.choices[0].message.content); // Parse JSON string to object
+                return JSON.parse(result.choices[0].message.content); // Parses the JSON string to object
             } else {
                 throw new Error('Model not supported for title generation.');
             }
@@ -64,13 +64,13 @@ class GeneratorService {
             if (getModelConfig().NAME === 'Gemini') {
                 result = await model.generateContent(prompt);
                 const cleanResponse = result.response.text().replace(/```json\n|\n```/g, '').trim();
-                return JSON.parse(cleanResponse); // Parse JSON string to object
+                return JSON.parse(cleanResponse); // Parses the string to object
             } else if (getModelConfig().NAME === 'OpenAI') {
                 result = await model.chat.completions.create({
                     model: getModelConfig().model,
                     messages: [{ role: 'user', content: prompt }],
                 });
-                return JSON.parse(result.choices[0].message.content); // Parse JSON string to object
+                return JSON.parse(result.choices[0].message.content); //Parses the JSON string to object
             } else {
                 throw new Error('Model not supported for meta generation.');
             }
@@ -89,13 +89,13 @@ class GeneratorService {
             let result;
             if (getModelConfig().NAME === 'Gemini') {
                 result = await model.generateContent(prompt);
-                return result.response.text(); // Return raw text (no JSON parsing needed)
+                return result.response.text();
             } else if (getModelConfig().NAME === 'OpenAI') {
                 result = await model.chat.completions.create({
                     model: getModelConfig().model,
                     messages: [{ role: 'user', content: prompt }],
                 });
-                return result.choices[0].message.content; // Return raw text (no JSON parsing needed)
+                return result.choices[0].message.content;// raw text content
             } else {
                 throw new Error('Model not supported for content generation.');
             }
@@ -113,7 +113,7 @@ class GeneratorService {
                 this.generateContent(topic)
             ]);
 
-            // Filter keywords if selectedKeywords are provided
+            // Filters keywords if selectedKeywords are provided by the user
             const filteredKeywords = selectedKeywords.length > 0
                 ? keywords.filter(k => selectedKeywords.includes(k.keyword))
                 : keywords;
