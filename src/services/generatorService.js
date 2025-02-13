@@ -4,8 +4,8 @@ class GeneratorService {
     static async generateKeywords(topic) {
         try {
             const model = getModel();
-            const prompt = `Generate 10 relevant SEO keywords for the topic: ${topic}. 
-                            Also give me the score of how much the keyword is relevant to the topic.
+            const prompt = `Generate atleast 10 relevant SEO keywords for the topic: ${topic}. 
+                            Also give me the score of how much the keyword is relevant to the topic in a highest score of 10.
                            Return only a JSON array of objects with "keyword" and "relevance" fields, without any markdown formatting or additional text.`;
     
             let result;
@@ -82,9 +82,11 @@ class GeneratorService {
     static async generateContent(topic) {
         try {
             const model = getModel();
-            const prompt = `Generate a detailed article about: ${topic}. 
-                           Include introduction, main points, and conclusion.
-                           Return only a html object inside a JSON array of strings, without any markdown formatting or additional text.`;
+            const prompt = `Generate a detailed article about: ${topic} in about 200 words excluding unnecessary "\n" and "\\n". 
+                           Include : 'a. a hook, context, thesis, and outline without any specific headings for them.
+                                    b. Main Content: Divide into 3-4 sections with subheadings, key takeaways, supporting evidence, and smooth transitions.
+                                    c. Conclusion: Summarize key points, provide final thoughts, and include a call-to-action.'
+                           Return only a html object inside a single JSON array of strings, without any markdown formatting or additional text.`;
 
             let result;
             if (getModelConfig().NAME === 'Gemini') {
@@ -108,9 +110,9 @@ class GeneratorService {
         try {
             const [keywords, titles, meta, content] = await Promise.all([
                 this.generateKeywords(topic),
-                this.generateTitle(topic),
-                this.generateMeta(topic),
-                this.generateContent(topic)
+                this.generateTitle(topic.selectedKeywords),
+                this.generateMeta(topic.selectedKeywords),
+                this.generateContent(topic.selectedKeywords)
             ]);
 
             // Filters keywords if selectedKeywords are provided by the user
