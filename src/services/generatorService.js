@@ -7,18 +7,18 @@ class GeneratorService {
             const prompt = `Generate 10 relevant SEO keywords for the topic: ${topic}. 
                             Also give me the score of how much the keyword is relevant to the topic.
                            Return only a JSON array of objects with "keyword" and "relevance" fields, without any markdown formatting or additional text.`;
-
+    
             let result;
             if (getModelConfig().NAME === 'Gemini') {
                 result = await model.generateContent(prompt);
                 const cleanResponse = result.response.text().replace(/```json\n|\n```/g, '').trim();
-                return JSON.parse(cleanResponse); // Parses the JSON string to object
+                return JSON.parse(cleanResponse); // Parse JSON string to object
             } else if (getModelConfig().NAME === 'OpenAI') {
                 result = await model.chat.completions.create({
                     model: getModelConfig().model,
                     messages: [{ role: 'user', content: prompt }],
                 });
-                return JSON.parse(result.choices[0].message.content); // Parses the JSON string to object
+                return JSON.parse(result.choices[0].message.content); // Parse JSON string to object
             } else {
                 throw new Error('Model not supported for keyword generation.');
             }
