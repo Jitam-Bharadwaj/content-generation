@@ -87,9 +87,9 @@ router.post('/keywords', async (req, res) => {
         const keywords = await GeneratorService.generateKeywords(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        // Add random number or symbol to the slug
+        // Add random number or symbol or alphabet to the slug 
         const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
+        const randomNumbers = Math.floor(Math.random() * 100000000);
 
         const randomChoice = Math.random() < 0.5 
         ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
@@ -97,7 +97,7 @@ router.post('/keywords', async (req, res) => {
 
         const finalSlug = `${slug}-${randomChoice}`;
 
-        // Ensure keywords is an array of objects with "keyword" and "relevance" fields
+        // array of objects with "keyword" and "relevance" fields
         const parsedKeywords = Array.isArray(keywords) 
             ? keywords.map(k => ({
                 keyword: k.keyword,
@@ -164,7 +164,7 @@ router.post('/title', async (req, res) => {
         const titles = await GeneratorService.generateTitle(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        // Add random number or symbol to the slug
+        // Add random number or symbol or alphabet to the slug 
         const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
         const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
@@ -235,7 +235,7 @@ router.post('/meta', async (req, res) => {
         const meta = await GeneratorService.generateMeta(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        // Add random number or symbol to the slug
+        // Add random number or symbol or alphabet to the slug 
         const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
         const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
@@ -303,7 +303,7 @@ router.post('/content', async (req, res) => {
         const content = await GeneratorService.generateContent(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        // Add random number or symbol to the slug
+        // Add random number or symbol or alphabet to the slug 
         const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
         const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
