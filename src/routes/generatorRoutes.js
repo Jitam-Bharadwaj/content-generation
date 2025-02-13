@@ -87,15 +87,28 @@ router.post('/keywords', async (req, res) => {
         const keywords = await GeneratorService.generateKeywords(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
-        const parsedKeywords = JSON.parse(keywords).map(k => ({
-            keyword: k.keyword,
-            relevance: k.relevance
-        }));
+        // Add random number or symbol or alphabet to the slug 
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000);
+
+        const randomChoice = Math.random() < 0.5 
+        ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
+        : randomNumbers;
+
+        const finalSlug = `${slug}-${randomChoice}`;
+
+        // array of objects with "keyword" and "relevance" fields
+        const parsedKeywords = Array.isArray(keywords) 
+            ? keywords.map(k => ({
+                keyword: k.keyword,
+                relevance: k.relevance
+            }))
+            : [];
 
         const chat = new Chat({
             requestType: 'keywords',
             input: req.body.topic,
-            slug: slug,
+            slug: finalSlug,
             output: JSON.stringify(parsedKeywords),
             keywords: parsedKeywords,
             metadata: {
@@ -151,10 +164,20 @@ router.post('/title', async (req, res) => {
         const titles = await GeneratorService.generateTitle(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
+        // Add random number or symbol or alphabet to the slug 
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
+
+        const randomChoice = Math.random() < 0.5 
+        ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
+        : randomNumbers;
+
+        const finalSlug1 = `${slug}-${randomChoice}`;
+
         const chat = new Chat({
             requestType: 'title',
             input: req.body.topic,
-            slug: slug,
+            slug: finalSlug1,
             output: JSON.stringify(titles),
             titles: titles,
             metadata: {
@@ -212,10 +235,20 @@ router.post('/meta', async (req, res) => {
         const meta = await GeneratorService.generateMeta(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
+        // Add random number or symbol or alphabet to the slug 
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
+
+        const randomChoice = Math.random() < 0.5 
+        ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
+        : randomNumbers;
+
+        const finalSlug2 = `${slug}-${randomChoice}`;
+
         const chat = new Chat({
             requestType: 'meta',
             input: req.body.topic,
-            slug: slug,
+            slug: finalSlug2,
             output: JSON.stringify(meta),
             meta: meta,
             metadata: {
@@ -270,10 +303,20 @@ router.post('/content', async (req, res) => {
         const content = await GeneratorService.generateContent(req.body.topic);
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
+        // Add random number or symbol or alphabet to the slug 
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
+
+        const randomChoice = Math.random() < 0.5 
+        ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
+        : randomNumbers;
+
+        const finalSlug3 = `${slug}-${randomChoice}`;
+
         const chat = new Chat({
             requestType: 'content',
             input: req.body.topic,
-            slug: slug,
+            slug: finalSlug3,
             output: content,
             content: content,
             metadata: {
