@@ -88,8 +88,8 @@ router.post('/keywords', async (req, res) => {
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
         // Add random number or symbol to the slug
-        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+'];
-        const randomNumbers = Math.floor(Math.random() * 1000); // Generates a random number between 0-999
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
         const randomChoice = Math.random() < 0.5 
         ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
@@ -165,8 +165,8 @@ router.post('/title', async (req, res) => {
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
         // Add random number or symbol to the slug
-        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+'];
-        const randomNumbers = Math.floor(Math.random() * 1000); // Generates a random number between 0-999
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
         const randomChoice = Math.random() < 0.5 
         ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
@@ -236,8 +236,8 @@ router.post('/meta', async (req, res) => {
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
         // Add random number or symbol to the slug
-        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+'];
-        const randomNumbers = Math.floor(Math.random() * 1000); // Generates a random number between 0-999
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
         const randomChoice = Math.random() < 0.5 
         ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
@@ -304,8 +304,8 @@ router.post('/content', async (req, res) => {
         const slug = req.body.topic.toLowerCase().replace(/\s+/g, '-');
 
         // Add random number or symbol to the slug
-        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+'];
-        const randomNumbers = Math.floor(Math.random() * 1000); // Generates a random number between 0-999
+        const randomSymbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        const randomNumbers = Math.floor(Math.random() * 100000000); // Generates a random number between 0-999
 
         const randomChoice = Math.random() < 0.5 
         ? randomSymbols[Math.floor(Math.random() * randomSymbols.length)] 
