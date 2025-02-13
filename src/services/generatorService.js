@@ -32,7 +32,7 @@ class GeneratorService {
             const model = getModel();
             const prompt = `Generate 1 engaging title for the topic: ${topic}. 
                            The title should be very attractive and under 60 characters. 
-                           Return only a JSON array of strings, without any markdown formatting or additional text.`;
+                           Return only a html object inside a JSON array of strings, without any markdown formatting or additional text.`;
 
             let result;
             if (getModelConfig().NAME === 'Gemini') {
@@ -58,7 +58,7 @@ class GeneratorService {
             const model = getModel();
             const prompt = `Generate meta description for the topic: ${topic}. 
                            The description should be under 160 characters and SEO optimized. 
-                           Return only a JSON object with a single "description" field, without any markdown formatting or additional text.`;
+                           Return only a html object inside a JSON object with a single "description" field, without any markdown formatting or additional text.`;
 
             let result;
             if (getModelConfig().NAME === 'Gemini') {
@@ -84,7 +84,7 @@ class GeneratorService {
             const model = getModel();
             const prompt = `Generate a detailed article about: ${topic}. 
                            Include introduction, main points, and conclusion.
-                           Return only a JSON array of strings, without any markdown formatting or additional text.`;
+                           Return only a html object inside a JSON array of strings, without any markdown formatting or additional text.`;
 
             let result;
             if (getModelConfig().NAME === 'Gemini') {
