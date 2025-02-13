@@ -341,8 +341,18 @@ router.post('/content', async (req, res) => {
 router.post('/all', async (req, res) => {
     try {
         const startTime = Date.now();
-        const allContent = await GeneratorService.generateAllContent(req.body.topic);
-        // first generated titke as slug
+
+        // Step 1: Generate keywords
+        const keywords = await GeneratorService.generateKeywords(req.body.topic);
+
+        // Step 2: Present keywords to the user (this is a placeholder for the actual UI interaction)
+        // In a real scenario, this would be handled by the frontend
+        const selectedKeywords = req.body.selectedKeywords || keywords.map(k => k.keyword);
+
+        // Step 3: Generate content based on selected keywords
+        const allContent = await GeneratorService.generateAllContent(req.body.topic, selectedKeywords);
+
+        // Step 4: Store the generated data in the database
         const slug = allContent.titles[0].toLowerCase().replace(/\s+/g, '-');
 
         const chat = new Chat({

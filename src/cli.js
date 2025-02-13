@@ -2,7 +2,7 @@ const readline = require('readline');
 const axios = require('axios');
 const GeneratorService = require('./services/generatorService');
 
-// punycode warning removal
+// Punycode warning removal
 process.removeAllListeners('warning');
 process.on('warning', (warning) => {
   if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
@@ -51,30 +51,13 @@ async function displayHealthCheck() {
   }
 }
 
-async function displayChatHistory() {
-  try {
-    const response = await axios.get(`${API_URL}/api/chat/history`);
-    console.log('\nChat History:');
-    console.log('===================');
-    response.data.res.data.forEach((chat, index) => {
-      console.log(`\nConversation ${index + 1}:`);
-      console.log(`User: ${chat.userInput}`);
-      console.log(`AI: ${chat.aiResponse}`);
-      console.log(`Time: ${new Date(chat.timestamp).toLocaleString()}`);
-      console.log('-------------------');
-    });
-  } catch (error) {
-    console.error('Error fetching chat history:', error.message);
-  }
-}
-
 async function switchModel() {
   return new Promise((resolve) => {
     console.log('\nAvailable Models:');
     AVAILABLE_MODELS.forEach((model, index) => {
       console.log(`${index + 1}. ${model}`);
     });
-    
+
     rl.question('\nSelect model (1-3): ', async (choice) => {
       const modelIndex = parseInt(choice) - 1;
       if (modelIndex >= 0 && modelIndex < AVAILABLE_MODELS.length) {
@@ -133,7 +116,6 @@ async function handleChatMode() {
         }
 
         try {
-          // Changed to use content generation endpoint for chat
           const response = await axios.post(`${API_URL}/api/generate/content`, { topic: input });
           console.log('\nAI:', response.data.data, '\n');
         } catch (error) {
@@ -174,94 +156,109 @@ async function handleGeneratorMode() {
         const selectedKeywords = selectedIndices
           .filter(i => i >= 0 && i < keywords.length)
           .map(i => keywords[i].keyword);
-        
+
         if (selectedKeywords.length === 0) {
-          console.log('\nNo valid keywords selected. Please try again.');
-          return selectKeywords(keywords);
+          console.log('\nNo valid keywords selected. Using all keywords.');
+          resolve(keywords.map(k => k.keyword));
+        } else {
+          resolve(selectedKeywords);
         }
-        
-        console.log('\nSelected keywords:', selectedKeywords.join(', '), '\n');
-        resolve(selectedKeywords);
       });
     });
   };
 
   const generator = async () => {
     try {
-      rl.question('Select option (1-5): ', async (option) => {
-        if (option.toLowerCase() === COMMANDS.EXIT) {
-          console.clear();
-          showMainMenu();
-          return;
-        }
+        rl.question('Select option (1-5): ', async (option) => {
+            if (option.toLowerCase() === COMMANDS.EXIT) {
+                console.clear();
+                showMainMenu();
+                return;
+            }
 
-        if (option.toLowerCase() === COMMANDS.HELP) {
-          await showHelp();
-          generator();
-          return;
-        }
+            if (option.toLowerCase() === COMMANDS.HELP) {
+                await showHelp();
+                generator();
+                return;
+            }
 
-        if (option.toLowerCase() === COMMANDS.HEALTH) {
-          await displayHealthCheck();
-          generator();
-          return;
-        }
+            if (option.toLowerCase() === COMMANDS.HEALTH) {
+                await displayHealthCheck();
+                generator();
+                return;
+            }
 
-        if (option.toLowerCase() === COMMANDS.MODEL) {
-          await switchModel();
-          generator();
-          return;
-        }
+            if (option.toLowerCase() === COMMANDS.MODEL) {
+                await switchModel();
+                generator();
+                return;
+            }
 
-        let endpoint;
-        let prompt;
+            let endpoint;
+            let prompt;
 
-        switch (option) {
-          case '1':
-            endpoint = '/api/generate/keywords';
-            prompt = 'Enter topic for keyword generation: ';
-            break;
-          case '2':
-            endpoint = '/api/generate/title';
-            prompt = 'Enter topic for title suggestions: ';
-            break;
-          case '3':
-            endpoint = '/api/generate/meta';
-            prompt = 'Enter topic for meta description: ';
-            break;
-          case '4':
-            endpoint = '/api/generate/content';
-            prompt = 'Enter topic for content generation: ';
-            break;
-          case '5':
-            endpoint = '/api/generate/all';
-            prompt = 'Enter topic to generate all content types: ';
-            break;
-          default:
-            console.log('Invalid option. Please choose 1-5.\n');
-            generator();
-            return;
-        }
+            switch (option) {
+                case '1':
+                    endpoint = '/api/generate/keywords';
+                    prompt = 'Enter topic for keyword generation: ';
+                    break;
+                case '2':
+                    endpoint = '/api/generate/title';
+                    prompt = 'Enter topic for title suggestions: ';
+                    break;
+                case '3':
+                    endpoint = '/api/generate/meta';
+                    prompt = 'Enter topic for meta description: ';
+                    break;
+                case '4':
+                    endpoint = '/api/generate/content';
+                    prompt = 'Enter topic for content generation: ';
+                    break;
+                case '5':
+                    endpoint = '/api/generate/all';
+                    prompt = 'Enter topic to generate all content types: ';
+                    break;
+                default:
+                    console.log('Invalid option. Please choose 1-5.\n');
+                    generator();
+                    return;
+            }
 
-        rl.question(prompt, async (topic) => {
-          try {
-            console.log('\nGenerating content...\n');
-            const response = await axios.post(`${API_URL}${endpoint}`, { topic });
-            
-            console.log('Generated Successfully!\n');
-            console.log(JSON.stringify(response.data.data, null, 2));
-            console.log('\nSelect another option or type "exit" to return to main menu\n');
-          } catch (error) {
-            console.error('Error generating content:', error.response?.data?.error || error.message);
-          }
-          generator();
+            rl.question(prompt, async (topic) => {
+                try {
+                    console.log('\nGenerating content...\n');
+                    const response = await axios.post(`${API_URL}${endpoint}`, { topic });
+
+                    // If generating all content, allow keyword selection
+                    if (option === '5') {
+                        const keywords = response.data.data.keywords;
+                        const selectedKeywords = await selectKeywords(keywords);
+
+                        // Regenerate content with selected keywords
+                        const updatedResponse = await axios.post(`${API_URL}${endpoint}`, {
+                            topic,
+                            selectedKeywords
+                        });
+
+                        console.log('Generated Successfully!\n');
+                        console.log(JSON.stringify(updatedResponse.data.data, null, 2));
+                    } else {
+                        console.log('Generated Successfully!\n');
+                        console.log(JSON.stringify(response.data.data, null, 2));
+                    }
+
+                    console.log('\nSelect another option or type "exit" to return to main menu\n');
+                } catch (error) {
+                    console.error('Error generating content:', error.response?.data?.error || error.message);
+                }
+                generator();
+            });
         });
-      });
     } catch (error) {
-      console.error('Error in generator mode:', error.message);
-      generator();
+        console.error('Error in generator mode:', error.message);
+        generator();
     }
-  };
+};
 
   generator();
 }
@@ -327,7 +324,7 @@ async function startChat() {
   showMainMenu();
 }
 
-// used to handle process termination
+// Handle process termination
 process.on('SIGINT', () => {
   console.log('\nGoodbye!');
   rl.close();
