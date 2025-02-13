@@ -7,4 +7,4 @@ The Approach used for solving the problem is attached below :
 
 
 Moving forward to the development this is the changes in the Approach used for solving the problem is attached below :
-![image alt](https://github.com/Jitam-Bharadwaj/final-content-generating-jitam/blob/bd497df470b63387570b0c8f30b41a058eea5e1b/Workflow-flow.jpg)
+![image alt]([https://github.com/Jitam-Bharadwaj/final-content-generating-jitam/blob/bd497df470b63387570b0c8f30b41a058eea5e1b/Workflow-flow.jpg](https://github.com/Jitam-Bharadwaj/final-content-generating-jitam/blob/89fe15fd5521276ab823c729ce730592754a56c1/IMG_1535.jpg))
