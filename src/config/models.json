@@ -4,7 +4,7 @@
   "GEMINI": {
       "NAME": "Gemini",
       "URL": "https://gemini.com/",
-      "GEMINI_API_KEY": "AIzaSyARy3fYtDPg45Kl4IwlXShmhlsLtoTqB7c",
+      "GEMINI_API_KEY": "enter you api key",
       "top_k": 5
   },
   "OPENAI": {
